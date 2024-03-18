@@ -1,0 +1,7 @@
+gitlab-runner register
+> enter gitlab install url: git.quypham.tech
+> token : copy token
+> description: dat cung ten server
+> tag: cung ten server
+> executer: shell (options: docker, kubernetes)
+Configure was saved in "/etc/gitlab-runner/config.toml

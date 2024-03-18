@@ -1,0 +1,3 @@
+visudo (set up gitlab-runner chay sudo nopassword)
+>gitlab-runner ALL=(ALL) NOPASSWD: /bin/cp* (cho phep chay len cp)
+>gitlab-runner ALL=(ALL) NOPASSWD: /bin/chown* (cho phep chay chown)

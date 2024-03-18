@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  thread-be:
+    image: thread_be:fix
+    container_name: thread_be
+    ports:
+      - "5000:5000"
+    depends_on:
+      - thread-db
+    networks:
+      - node-network
+    restart: always
+  thread-db:
+    image: mongo
+    container_name: thread_db
+    volumes:
+      - /mongodb/data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - node-network
+    restart: always
+  thread-fe:
+    image: thread_fe:v2
+    container_name: thread_fe
+    depends_on:
+      - thread-be
+    ports:
+      - "80:80"
+    networks:
+      - node-network
+
+networks:
+    node-network:
+        driver: bridge

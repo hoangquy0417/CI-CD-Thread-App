@@ -1,0 +1,55 @@
+variables:
+    DOCKER_IMAGE_BE: ${REGISTRY_URL}/${REGISTRY_PROJECT}/${CI_PROJECT_NAME}BE:${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}
+    DOCKER_CONTAINER_BE: ${CI_PROJECT_NAME}BE
+    DOCKER_IMAGE_FE: ${REGISTRY_URL}/${REGISTRY_PROJECT}/${CI_PROJECT_NAME}FE:${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}
+    DOCKER_CONTAINER_FE: ${CI_PROJECT_NAME}FE
+stages:
+    - buildandpush
+    - deploy
+    - showlog
+
+buildandpush:
+    stage: buildandpush
+    variables:
+        GIT_STRATEGY: clone
+    before_script:
+        - docker login ${REGISTRY_URL} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD}
+    script:
+        - docker build -t $DOCKER_IMAGE_BE ./backend
+        - docker push $DOCKER_IMAGE_BE
+        - docker build -t $DOCKER_IMAGE_FE ./frontend
+        - docker push $DOCKER_IMAGE_FE
+    tags:
+        - ubuntu-dev
+    only:
+        - tags
+
+deploy:
+    stage: deploy
+    variables:
+        GIT_STRATEGY: none
+    before_script:
+        - docker login ${REGISTRY_URL} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD}
+    script:
+        - docker pull $DOCKER_IMAGE_BE
+        - docker pull $DOCKER_IMAGE_FE
+        - docker rm -f $DOCKER_CONTAINER_FE
+        - docker rm -f $DOCKER_CONTAINER_BE
+        - docker run --name $DOCKER_CONTAINER_BE -dp 5000:5000 $DOCKER_IMAGE_BE
+        - docker run --name $DOCKER_CONTAINER_FE -dp 80:80 $DOCKER_IMAGE_FE
+    tags:
+        - ubuntu-dev
+    only:
+        - tags
+
+showlog:
+    stage: showlog
+    variables:
+        GIT_STRATEGY: none
+    script:
+        - sleep 20
+        - docker logs $DOCKER_CONTAINER_BE
+    tags:
+        - ubuntu-dev
+    only:
+        - tags

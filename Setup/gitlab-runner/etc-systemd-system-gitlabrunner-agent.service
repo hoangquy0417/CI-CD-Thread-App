@@ -1,0 +1,14 @@
+[Unit]
+Description=Gitlab Runner Agent
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/gitlab-runner/
+ExecStart=/bin/bash -c 'gitlab-runner run --working-directory /home/gitlab-runner/ --config /etc/gitlab-runner/config.toml --service gitlab-runner --user gitlab-runner'
+
+User=gitlab-runner
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
