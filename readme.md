@@ -7,4 +7,4 @@ Feature List:
 -   Registry Harbor
 ### App demo thread
 ### Demo CI-CD:
-- youtube: 
+- youtube: https://www.youtube.com/watch?v=2_sc1nqhGd0
